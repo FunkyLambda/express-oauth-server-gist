@@ -21,23 +21,26 @@ class ValidationError extends Error {}
 class RegistrationVerificationError extends Error {}
 
 const getFooHandler = (req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.log('Running GET:/foo ...')
-
-  const query_string = 'foo=abc&bar=xzy123'
+  console.log('Running GET:/foo: ' + req.url)
 
   res.render(
     'foo',
     {
-      queryString: query_string,
       csrfToken: req.csrfToken(),
     }
   )
 }
 
-const postFooHandler = (req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.log('Running POST:/foo ...')
+const postFooHandler = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.log('Running POST:/foo: ' + req.url)
 
-  res.render('Success')
+  req.url = '/getfoo'
+  console.log('rewritten url to: ' + req.url)
+  // TODO: URL in browser address bar should read http://localhost:8080/getfoo
+  // but instead it reads http://localhost:8080/postfoo
+
+  getFooHandler(req, res, next)
+  next()
 }
 
 const errorHandler = async (error: Error, _req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -53,7 +56,6 @@ const errorHandler = async (error: Error, _req: express.Request, res: express.Re
       status_code = 400
       error_message = error.message
     } else if (error.name === 'ForbiddenError') {
-      // TODO: Can instanceof be used instead of comparing name?
       status_code = 403
       error_message = error.message
     }
@@ -75,7 +77,7 @@ app.listen(8080, () => {
 })
 
 // Endpoints
-app.get('/foo', csrfProtection, getFooHandler)
-app.post('/foo', csrfProtection, postFooHandler)
+app.get('/getfoo', csrfProtection, getFooHandler)
+app.post('/postfoo', csrfProtection, postFooHandler)
 
 app.use(errorHandler)

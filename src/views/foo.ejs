@@ -20,11 +20,12 @@
   <body>
     <h1>Foo</h1>
     <%= csrfToken %>
-    <form method="post" action="/foo?<%=queryString%>">
+    <form method="post" action="/postfoo">
       <p>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </p>
       
+      <input type="submit" value="Post">
     </form>
   </body>
 </html>

@@ -44,13 +44,7 @@
     "typescript": "^4.1.2"
   },
   "scripts": {
-    "pre-build": "./pre-build.sh",
-    "start": "yarn && yarn tsc && node dist/sm-auth/src/index.js",
-    "start-dev": "yarn && yarn pre-build && yarn && yarn tsc && nodemon --exec ts-node src/index.ts",
-    "pipeline-test": "yarn && yarn tsc && rm -rf dist/sm-auth/__tests__ && jest --coverage --passWithNoTests",
-    "test": "yarn && yarn pre-build && yarn pipeline-test",
-    "create-db-migration": "yarn pre-build && yarn && db-migrate create ${1} --sql-file -m ./src/data/migrations -e all --config ./config/db/config.json",
-    "run-all-migrations": "yarn pre-build && yarn && db-migrate up -m src/data/migrations -e all --config config/db/config.json"
+    "start-dev": "yarn && nodemon --exec ts-node src/index.ts"
   },
   "jest": {
     "moduleFileExtensions": [
